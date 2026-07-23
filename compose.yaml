@@ -1,0 +1,17 @@
+services:
+  api:
+    build:
+        context: .
+        dockerfile: ./api/Dockerfile
+    ports:
+      - "8000:8000"
+    image: yragax/devops-learning:api
+  demo:
+    build:
+        context: .
+        dockerfile: ./demo/Dockerfile
+    ports:
+      - "7860:7860"
+    depends_on:
+      - api
+    image: yragax/devops-learning:demo
