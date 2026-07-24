@@ -22,7 +22,7 @@ async def predict(payload: InferenceInput):
         # Convert Pydantic payload to the format expected by scikit-learn
         input_data = pd.DataFrame(
             {
-                "MedInc": [payload.median_income],
+                "MedianIncome": [payload.median_income],
                 "HouseAge": [payload.housing_median_age],
                 "AveRooms": [payload.total_rooms],
                 "AveBedrms": [payload.total_bedrooms],
