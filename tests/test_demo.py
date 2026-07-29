@@ -1,3 +1,10 @@
+import os
+import dotenv
+
+dotenv.load_dotenv()
+API_PORT = int(os.getenv("API_PORT"))
+
+
 def test_demo_predict_house_value_result_good(mocker):
     mock_post = mocker.patch("demo.demo.requests.post")
     mock_post.return_value.status_code = 200
@@ -6,7 +13,7 @@ def test_demo_predict_house_value_result_good(mocker):
     from demo.demo import predict_house_value
 
     input_data = {
-        "api_url": "http://api:8000/predict",
+        "api_url": f"http://api:{API_PORT}/predict",
         "longitude": "-122.3456",
         "latitude": "47.6397",
         "housing_median_age": "36.0",
@@ -35,7 +42,7 @@ def test_demo_predict_house_value_result_bad_status(mocker):
     from demo.demo import predict_house_value
 
     input_data = {
-        "api_url": "http://api:8000/predict",
+        "api_url": f"http://api:{API_PORT}/predict",
         "longitude": "-122.3456",
         "latitude": "47.6397",
         "housing_median_age": "36.0",
@@ -60,7 +67,7 @@ def test_demo_predict_house_value_result_bad_request():
     from demo.demo import predict_house_value
 
     input_data = {
-        "api_url": "http://api:8000/predict",
+        "api_url": f"http://api:{API_PORT}/predict",
         "longitude": "-122.3456",
         "latitude": "47.6397",
         "housing_median_age": "36.0",
@@ -77,5 +84,5 @@ def test_demo_predict_house_value_result_bad_request():
     assert "error" in result
     assert (
         result["error"]
-        == f"Request failed: HTTPConnectionPool(host='api', port=8000): Max retries exceeded with url: /predict (Caused by NameResolutionError(\"HTTPConnection(host='api', port=8000): Failed to resolve 'api' ([Errno -3] Temporary failure in name resolution)\"))"
+        == f"Request failed: HTTPConnectionPool(host='api', port={API_PORT}): Max retries exceeded with url: /predict (Caused by NameResolutionError(\"HTTPConnection(host='api', port={API_PORT}): Failed to resolve 'api' ([Errno -3] Temporary failure in name resolution)\"))"
     )

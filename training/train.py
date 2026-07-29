@@ -1,18 +1,24 @@
+import os
+import dotenv
 import mlflow
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-# 0. Initialize MLflow
-mlflow.set_tracking_uri("http://localhost:5000")
+# Load environmental variables
+dotenv.load_dotenv()
+MLFLOW_URI = str(os.getenv("MLFLOW_URI"))
+
+# Initialize MLflow
+mlflow.set_tracking_uri(MLFLOW_URI)
 mlflow.set_experiment("California Housing Price Prediction")
 
-# 1. Fetch the dataset
+# Fetch the dataset
 california = fetch_california_housing(as_frame=True)
 df = california.frame
 
-# 2. Split the data (80% training, 20% testing)
+# Split the data (80% training, 20% testing)
 df_train, df_test = train_test_split(df, test_size=0.2, random_state=42)
 train_dataset = mlflow.data.from_pandas(
     df_train, name="california_housing", targets="MedHouseVal"
@@ -21,7 +27,7 @@ test_dataset = mlflow.data.from_pandas(
     df_test, name="california_housing", targets="MedHouseVal"
 )
 
-# 3. Define Features (X) and Target (y)
+# Define Features (X) and Target (y)
 X_train = df_train.drop(columns="MedHouseVal")
 X_test = df_test.drop(columns="MedHouseVal")
 y_train = df_train["MedHouseVal"]
@@ -40,14 +46,14 @@ for n_estimators in [50, 100, 500]:
             )
             rf_model.fit(X_train, y_train)
 
-            # 5. Make predictions
+            # Make predictions
             predictions = rf_model.predict(X_test)
 
-            # 6. Evaluate the model
+            # Evaluate the model
             mse = mean_squared_error(y_test, predictions)
             r2 = r2_score(y_test, predictions)
 
-            # 7. Log parameters, metrics, and model to MLflow
+            # Log parameters, metrics, and model to MLflow
             with mlflow.start_run() as run:
                 mlflow.log_input(train_dataset, context="train")
                 mlflow.log_input(test_dataset, context="test")

@@ -1,9 +1,17 @@
+import os
+import dotenv
 import pickle
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from api.schemas import InferenceInput, InferenceOutput
 
-# 1. Initialize the FastAPI
+# Load environmental variables
+dotenv.load_dotenv()
+API_PORT = int(os.getenv("API_PORT"))
+MODEL_PATH = str(os.getenv("MODEL_PATH"))
+
+
+# Initialize the FastAPI
 api = FastAPI(
     title="Random Forest Regressor Inference API",
     version="1.0.0",
@@ -11,12 +19,12 @@ api = FastAPI(
 )
 
 
-# 2. Load the trained model globally
-with open("models/champion.pkl", "rb") as f:
+# Load the trained model globally
+with open(MODEL_PATH, "rb") as f:
     model = pickle.load(f)
 
 
-# 3. Create the POST endpoint for inference
+# Create the POST endpoint for inference
 @api.post("/predict", response_model=InferenceOutput, status_code=200)
 async def predict(payload: InferenceInput):
     try:
@@ -44,9 +52,9 @@ async def predict(payload: InferenceInput):
         raise HTTPException(status_code=500, detail=f"Inference failed: {str(e)}")
 
 
-# 4. Run the API using Uvicorn
+# Run the API using Uvicorn
 if __name__ == "__main__":
     import uvicorn
 
     # Run server on 0.0.0.0 to allow access from other containers
-    uvicorn.run("api.api:api", host="0.0.0.0", port=8000)
+    uvicorn.run("api.api:api", host="0.0.0.0", port=API_PORT)
