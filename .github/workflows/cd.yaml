@@ -9,6 +9,12 @@ jobs:
   cd:
     runs-on: ubuntu-latest
 
+    env:
+      MLFLOW_URI: ${{ vars.MLFLOW_URI }}
+      API_PORT: ${{ vars.API_PORT }}
+      DEMO_PORT: ${{ vars.DEMO_PORT }}
+      MODEL_PATH: ${{ vars.MODEL_PATH }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,11 +26,6 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build images
-        env:
-          MLFLOW_URI: ${{ vars.MLFLOW_URI }}
-          API_PORT: ${{ vars.API_PORT }}
-          DEMO_PORT: ${{ vars.DEMO_PORT }}
-          MODEL_PATH: ${{ vars.MODEL_PATH }}
         run: docker compose build
 
       - name: Push images to Docker Hub
