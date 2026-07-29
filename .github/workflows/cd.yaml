@@ -14,6 +14,7 @@ jobs:
       API_PORT: ${{ vars.API_PORT }}
       DEMO_PORT: ${{ vars.DEMO_PORT }}
       MODEL_PATH: ${{ vars.MODEL_PATH }}
+      TAG: ${{ github.sha }}
 
     steps:
       - name: Checkout repository
@@ -30,3 +31,10 @@ jobs:
 
       - name: Push images to Docker Hub
         run: docker compose push
+
+      - name: Update latest tags
+        run: |
+          docker tag yragax/prod-devops-learning:api-${{ github.sha }} yragax/prod-devops-learning:api-latest
+          docker tag yragax/prod-devops-learning:demo-${{ github.sha }} yragax/prod-devops-learning:demo-latest
+          docker push yragax/prod-devops-learning:api-latest
+          docker push yragax/prod-devops-learning:demo-latest
