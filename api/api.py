@@ -1,4 +1,4 @@
-import joblib
+import pickle
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from api.schemas import InferenceInput, InferenceOutput
@@ -12,7 +12,8 @@ api = FastAPI(
 
 
 # 2. Load the trained model globally
-model = joblib.load("models/rf_20260723221305.pkl")
+with open("models/champion.pkl", "rb") as f:
+    model = pickle.load(f)
 
 
 # 3. Create the POST endpoint for inference
