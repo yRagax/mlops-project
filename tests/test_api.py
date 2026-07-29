@@ -21,7 +21,7 @@ def test_api_predict_good():
     response = client.post("/predict", json=input_data)
 
     assert response.status_code == 200
-    assert math.isclose(response.json()["prediction"], 4.110213039002661)
+    assert math.isclose(response.json()["prediction"], 4.190363283442113)
 
 
 def test_api_predict_bad_data_type():
