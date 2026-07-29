@@ -1,9 +1,12 @@
+import os
+import dotenv
 import gradio as gr
 import requests
-import json
 
-# Default API Endpoint
-DEFAULT_API_URL = "http://api:8000/predict"
+# Load environmental variables
+dotenv.load_dotenv()
+DEMO_PORT = int(os.getenv("DEMO_PORT"))
+API_PORT = int(os.getenv("API_PORT"))
 
 
 def predict_house_value(
@@ -60,7 +63,7 @@ with gr.Blocks(title="California Housing Dataset Predictor") as demo:
     with gr.Row():
         api_endpoint = gr.Textbox(
             label="API Endpoint URL",
-            value=DEFAULT_API_URL,
+            value=f"http://api:{API_PORT}/predict",
             scale=2,
         )
 
@@ -108,7 +111,7 @@ with gr.Blocks(title="California Housing Dataset Predictor") as demo:
 
 if __name__ == "__main__":
     try:
-        demo.launch(server_name="0.0.0.0", server_port=7860)
+        demo.launch(server_name="0.0.0.0", server_port=DEMO_PORT)
     except KeyboardInterrupt:
         print("\nStopping Gradio server safely...")
         demo.close()
