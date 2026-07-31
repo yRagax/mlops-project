@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   cd:
     runs-on: ubuntu-latest
@@ -14,27 +18,49 @@ jobs:
       API_PORT: ${{ vars.API_PORT }}
       DEMO_PORT: ${{ vars.DEMO_PORT }}
       MODEL_PATH: ${{ vars.MODEL_PATH }}
+      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
       TAG: ${{ github.sha }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      - name: Configure AWS credentials (OIDC)
+        id: aws-creds-oidc
+        continue-on-error: true
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          role-to-assume: ${{ secrets.AWS_GH_ACTIONS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Configure AWS credentials (Local Development)
+        if: steps.aws-creds-oidc.outcome == 'failure'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build images
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          BUILDX_NO_DEFAULT_ATTESTATIONS: "1"
         run: docker compose build
 
-      - name: Push images to Docker Hub
+      - name: Push images
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: docker compose push
 
       - name: Update latest tags
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker tag yragax/prod-devops-learning:api-${{ github.sha }} yragax/prod-devops-learning:api-latest
-          docker tag yragax/prod-devops-learning:demo-${{ github.sha }} yragax/prod-devops-learning:demo-latest
-          docker push yragax/prod-devops-learning:api-latest
-          docker push yragax/prod-devops-learning:demo-latest
+          docker tag ${ECR_REGISTRY}/${ECR_REPOSITORY}:api-${TAG} ${ECR_REGISTRY}/${ECR_REPOSITORY}:api-latest
+          docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:api-latest
+          docker tag ${ECR_REGISTRY}/${ECR_REPOSITORY}:demo-${TAG} ${ECR_REGISTRY}/${ECR_REPOSITORY}:demo-latest
+          docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:demo-latest
