@@ -1,23 +1,21 @@
 services:
   api:
+    network_mode: "host"
     environment:
         API_PORT: ${API_PORT}
         MODEL_PATH: ${MODEL_PATH}
     build:
         context: .
         dockerfile: ./api/Dockerfile
-    ports:
-      - "${API_PORT}:${API_PORT}"
     image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:api-${TAG:-latest}
   demo:
+    network_mode: "host"
     environment:
         API_PORT: ${API_PORT}
         DEMO_PORT: ${DEMO_PORT}
     build:
         context: .
         dockerfile: ./demo/Dockerfile
-    ports:
-      - "${DEMO_PORT}:${DEMO_PORT}"
     depends_on:
       - api
     image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:demo-${TAG:-latest}
