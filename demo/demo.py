@@ -63,7 +63,7 @@ with gr.Blocks(title="California Housing Dataset Predictor") as demo:
     with gr.Row():
         api_endpoint = gr.Textbox(
             label="API Endpoint URL",
-            value=f"http://api:{API_PORT}/predict",
+            value=f"http://localhost:{API_PORT}/predict",
             scale=2,
         )
 
