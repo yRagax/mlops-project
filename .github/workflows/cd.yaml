@@ -66,3 +66,14 @@ jobs:
           docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:api-latest
           docker tag ${ECR_REGISTRY}/${ECR_REPOSITORY}:demo-${TAG} ${ECR_REGISTRY}/${ECR_REPOSITORY}:demo-latest
           docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:demo-latest
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+
+      - name: Update infrastructure
+        run: |
+          terraform -chdir=terraform init
+          terraform -chdir=terraform apply -auto-approve \
+            -var "api_container_port=${API_PORT}" \
+            -var "demo_container_port=${DEMO_PORT}" \
+            -var "model_path=${MODEL_PATH}"

@@ -1,0 +1,3 @@
+demo_container_port = your_demo_container_port
+api_container_port = your_api_container_port
+model_path = your_model_path
