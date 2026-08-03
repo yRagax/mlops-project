@@ -3,3 +3,5 @@ mlruns
 mlartifacts
 .env
 .secrets
+.terraform
+terraform.tfvars
