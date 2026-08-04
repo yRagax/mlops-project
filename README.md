@@ -1,7 +1,7 @@
 # California House Price Prediction — MLOps & DevOps Portfolio Project
 
-[![Python CI](https://github.com/yRagax/devops-learning/actions/workflows/ci.yaml/badge.svg)](https://github.com/yRagax/devops-learning/actions/workflows/ci.yaml)
-[![Python CD](https://github.com/yRagax/devops-learning/actions/workflows/cd.yaml/badge.svg)](https://github.com/yRagax/devops-learning/actions/workflows/cd.yaml)
+[![Python CI](https://github.com/yRagax/mlops-project/actions/workflows/ci.yaml/badge.svg)](https://github.com/yRagax/mlops-project/actions/workflows/ci.yaml)
+[![Python CD](https://github.com/yRagax/mlops-project/actions/workflows/cd.yaml/badge.svg)](https://github.com/yRagax/mlops-project/actions/workflows/cd.yaml)
 
 An end-to-end machine learning project that trains a regression model, serves it through a REST API, exposes a web demo, and deploys the full stack to AWS with Docker, GitHub Actions, and Terraform.
 
@@ -84,7 +84,7 @@ flowchart TB
 ## Project Structure
 
 ```
-devops-learning/
+mlops-project/
 ├── api/                  # FastAPI inference service
 │   ├── api.py
 │   ├── schemas.py
@@ -119,8 +119,8 @@ devops-learning/
 ### 1. Clone and configure environment
 
 ```bash
-git clone https://github.com/yRagax/devops-learning.git
-cd devops-learning
+git clone https://github.com/yRagax/mlops-project.git
+cd mlops-project
 cp .env.example .env
 ```
 
@@ -317,7 +317,7 @@ Interactive documentation is available at `/docs` when the API is running.
 
 **yRagax** — [GitHub](https://github.com/yRagax)
 
-Self-directed DevOps & MLOps learning project. Feedback and suggestions are welcome via [Issues](https://github.com/yRagax/devops-learning/issues).
+Self-directed DevOps & MLOps learning project. Feedback and suggestions are welcome via [Issues](https://github.com/yRagax/mlops-project/issues).
 
 ---
 
