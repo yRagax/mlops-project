@@ -29,14 +29,14 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         id: aws-creds-oidc
         continue-on-error: true
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.AWS_GH_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Configure AWS credentials (Local Development)
         if: steps.aws-creds-oidc.outcome == 'failure'
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
